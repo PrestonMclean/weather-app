@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\location;
+use App\Models\User;
+use App\Models\userLocation;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,7 +17,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        \App\Models\User::factory(5)->create();
+
+        location::factory(4)->create();
+
+        $roles = User::all();
+
+        // Populate the pivot table
+        location::all()->each(function ($location) use ($roles) { 
+            $location->roles()->attach(
+                $roles->random(rand(1, 3))->pluck('id')->toArray()
+            ); 
+        });
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

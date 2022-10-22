@@ -21,22 +21,13 @@
         </style>
     </head>
     <body>
-        <?php
+        @php
 
             function getLatitudeAndLongitude($location)
             {
                 $key = '0dc76f97d23663ff394e9681b49bb2ba';
 
-                $curl = curl_init('http://api.positionstack.com/v1/forward?access_key=' . $key . '&query=' . $location);
-
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json'
-                ]);
-
-                $response = curl_exec($curl);
-
-                curl_close($curl);
+                $response = callApi('http://api.positionstack.com/v1/forward?access_key=' . $key . '&query=' . $location);
 
                 $response = json_decode($response, true);
 
@@ -47,16 +38,9 @@
 
             function getWeatherCodeFullDay($latitude, $longitude)
             {
-                $curl = curl_init('https://api.tomorrow.io/v4/timelines?location=' . $latitude .',' . $longitude . '&fields=temperature&timesteps=1d&endTime=nowPlus6d&units=imperial&fields=weatherCodeFullDay&apikey=IGui1j9ReuxZmKGwEkvzbyJfT1A9gwi7');
+                $key = 'IGui1j9ReuxZmKGwEkvzbyJfT1A9gwi7';
 
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json'
-                ]);
-
-                $response = curl_exec($curl);
-
-                curl_close($curl);
+                $response = callApi('https://api.tomorrow.io/v4/timelines?location=' . $latitude .',' . $longitude . '&fields=temperature&timesteps=1d&endTime=nowPlus6d&units=imperial&fields=weatherCodeFullDay&apikey=' . $key);
 
                 $response = json_decode($response, true);
                 foreach ($response['data']['timelines'][0]['intervals'] as $day) {
@@ -64,19 +48,32 @@
                 }
             }
 
-            
-            $locations = ['75069','75002','allen, Texas'];
+            function callApi($url)
+            {
+                $curl = curl_init($url);
 
-            foreach ($locations as $location) {
-                echo $location . "<br>";
-                $location = htmlspecialchars($_GET["location"]);
-                $location = getLatitudeAndLongitude($location);
-                $latitude = $location[0];
-                $longitude = $location[1];
-                getWeatherCodeFullDay($latitude, $longitude);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json'
+                ]);
+
+                $response = curl_exec($curl);
+                curl_close($curl);
+                return $response;
             }
+            
+            echo 'zip ' . $locations[0]['zip'] . "<br>";
+            $location = getLatitudeAndLongitude($locations[0]['zip']);
+            $latitude = $location[0];
+            $longitude = $location[1];
+            getWeatherCodeFullDay($latitude, $longitude);
 
-        ?>
+        @endphp
+        @foreach ($locations as $location)
+            <p>
+                {{$location['zip']}}
+            </p>
+        @endforeach
         <form action="" method="get">
             <input type="text" name="location">
             <input type="submit" value="get location">

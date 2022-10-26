@@ -15,7 +15,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users_locations', function (Blueprint $table) {
+        Schema::create('location_user', function (Blueprint $table) {
             $table->foreignId('user_id');
             $table->foreignId('location_id');
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_locations');
+        Schema::dropIfExists('location_user');
     }
 };

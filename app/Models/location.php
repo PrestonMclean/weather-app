@@ -9,7 +9,7 @@ class location extends Model
 {
     use HasFactory;
 
-    public function roles()
+    public function users()
     {
         return $this->belongsToMany('app\Models\User');
     }

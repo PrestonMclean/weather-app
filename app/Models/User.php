@@ -42,7 +42,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function roles()
+    public function locations()
     {
         return $this->belongsToMany('app\Models\location');
     }
